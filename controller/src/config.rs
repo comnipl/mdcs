@@ -46,13 +46,13 @@ mod test{
             "--server-type",
             "paper",
             "--registry-path",
-            "registry",
+            "${HOME}/registry",
             "--server-path",
             "${HOME}/example_server",
             "--start-command",
-            "java -Xms4G -Xmx4G -jar paper.jar --nogui",
+            "./start.sh",
             "--stop-command",
-            "kill -s SIGTERM ${PID}",
+            "./stop.sh",
         ]).unwrap();
 
         assert_eq!(
@@ -63,10 +63,10 @@ mod test{
                 github_password: "example_password".to_string(),
                 server_name: "example_server".to_string(),
                 server_type: ServerType::Paper,
-                registry_path: "registry".to_string(),
+                registry_path: "${HOME}/registry".to_string(),
                 server_path: "${HOME}/example_server".to_string(),
-                start_command: "java -Xms4G -Xmx4G -jar paper.jar --nogui".to_string(),
-                stop_command: "kill -s SIGTERM ${PID}".to_string(),
+                start_command: "./start.sh".to_string(),
+                stop_command: "./stop.sh".to_string(),
             }
         );
     }
