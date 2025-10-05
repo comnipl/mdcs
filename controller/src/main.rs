@@ -38,7 +38,7 @@ async fn get_new_commit_task(env_config: &Config, req_client: &reqwest::Client){
             Ok(response) => response,
             Err(e) => {
                 error!("Error Occured while fetch commit from github: {}",e);
-                return;
+                continue;
             }
         };
 
