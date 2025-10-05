@@ -52,7 +52,7 @@ async fn get_new_commit_task(env_config: &Config, req_client: &reqwest::Client){
             warn!("Could not extract commit 'sha' from response.");
             continue;
         };
-        if *sha_value.to_string()!=prev_commit_sha{
+        if sha_value != prev_commit_sha {
             info!("commit updated! new SHA: {}",sha_value);
         }
         prev_commit_sha = sha_value.to_string();
