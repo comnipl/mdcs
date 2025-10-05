@@ -5,7 +5,6 @@ use std::time::Duration;
 
 use clap::Parser;
 use config::Config;
-use tokio::sync::mpsc;
 use tracing::{debug, info, warn,error};
 
 #[dotenvy_macros::load]
@@ -23,21 +22,17 @@ async fn main() -> anyhow::Result<()>{
 
     let req_client = reqwest::Client::new();
 
-    let (tx, rx) = mpsc::channel::<()>(32);
+    tokio::spawn(async move{get_new_commit_task(&env_config,&req_client).await});
 
-    tokio::spawn(async move{get_new_commit_task(&env_config,&req_client,rx).await});
-
-    loop{
-        // sleep 3 minutes
-        let _ = tokio::time::sleep(Duration::new(10,0)).await;
-        let _ = tx.send(()).await;
-    }
+    std::future::pending::<()>().await;
+    Ok(())
 }
 
-async fn get_new_commit_task(env_config: &Config, req_client: &reqwest::Client,mut mpsc_rx: mpsc::Receiver<()>){
+async fn get_new_commit_task(env_config: &Config, req_client: &reqwest::Client){
     let mut prev_commit_sha = "".to_string();
     loop{
-        mpsc_rx.recv().await;
+        // sleep 3 minutes
+        let _ = tokio::time::sleep(Duration::new(60*3,0)).await;
 
         let response = match github_access::fetch_commits(env_config, req_client).await{
             Ok(response) => response,
@@ -47,13 +42,18 @@ async fn get_new_commit_task(env_config: &Config, req_client: &reqwest::Client,m
             }
         };
 
-        let Some(sha_value) = response.get("sha")else{
-            warn!("'sha' key was not exist in response.");
+        let latest_commit = if response.is_array(){
+            response.get(0)
+        }else{
+            Some(&response)
+        };
+
+        let Some(sha_value) = latest_commit.and_then(|commit| commit.get("sha")).and_then(|sha| sha.as_str()) else{
+            warn!("Could not extract commit 'sha' from response.");
             continue;
         };
-        println!("{:?}",sha_value.to_string());
         if *sha_value.to_string()!=prev_commit_sha{
-            info!("commit updated!");
+            info!("commit updated! new SHA: {}",sha_value);
         }
         prev_commit_sha = sha_value.to_string();
     }

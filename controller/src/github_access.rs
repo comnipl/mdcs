@@ -8,7 +8,7 @@ pub async fn fetch_commits(config: &Config, req_client: &reqwest::Client)->anyho
 
     let Ok(auth_header_value) = HeaderValue::from_str(&format!("Bearer {}", config.github_password))else{
         error!("GITHUB_PASSWORD value was invalid.");
-        panic!();
+        return Err(anyhow::anyhow!("GITHUB_PASSWORD value was invalid."));
     };
     headers.insert(AUTHORIZATION, auth_header_value);
     let accept_header_value = HeaderValue::from_static("application/vnd.github+json");
