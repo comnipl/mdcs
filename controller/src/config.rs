@@ -67,7 +67,7 @@ mod test{
             configs,
             Config{
                 github_username: "example_user".to_string(),
-                github_repository_owner_name: "example_name".to_string(),
+                github_repository_owner_name: "example_user".to_string(),
                 github_repository_name: "example_repo".to_string(),
                 github_branch_name: Some("main".to_string()),
                 github_password: "example_password".to_string(),
