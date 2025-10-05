@@ -5,7 +5,7 @@ use std::time::Duration;
 
 use clap::Parser;
 use config::Config;
-use tracing::{debug, info, warn,error};
+use tracing::{debug, info, warn, error};
 
 #[dotenvy_macros::load]
 #[tokio::main]
