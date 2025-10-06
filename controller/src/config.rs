@@ -1,11 +1,15 @@
 use clap::{Parser, ValueEnum};
 
 #[derive(Debug, Parser, PartialEq)]
-pub struct Config{
-    #[arg(long, env)]
-    pub github_repository_url: String,
+pub struct Config {
     #[arg(long, env)]
     pub github_username: String,
+    #[arg(long, env)]
+    pub github_repository_owner_name: String,
+    #[arg(long, env)]
+    pub github_repository_name: String,
+    #[arg(long, env)]
+    pub github_branch_name: Option<String>,
     #[arg(long, env, hide_env_values = true)]
     pub github_password: String,
     #[arg(long, env)]
@@ -23,22 +27,26 @@ pub struct Config{
 }
 
 #[derive(Debug, Clone, ValueEnum, PartialEq)]
-pub enum ServerType{
+pub enum ServerType {
     Paper,
     Velocity,
 }
 
 #[cfg(test)]
-mod test{
+mod test {
     use super::*;
     #[test]
-    fn parse_arguments(){
-        let configs = Config::try_parse_from(&[
+    fn parse_arguments() {
+        let configs = Config::try_parse_from([
             "mdcs-controller",
-            "--github-repository-url",
-            "https://github.com/example_user/example_repo",
             "--github-username",
             "example_user",
+            "--github-repository-owner-name",
+            "example_user",
+            "--github-repository-name",
+            "example_repo",
+            "--github-branch-name",
+            "main",
             "--github-password",
             "example_password",
             "--server-name",
@@ -53,13 +61,16 @@ mod test{
             "./start.sh",
             "--stop-command",
             "./stop.sh",
-        ]).unwrap();
+        ])
+        .unwrap();
 
         assert_eq!(
             configs,
-            Config{
-                github_repository_url: "https://github.com/example_user/example_repo".to_string(),
+            Config {
                 github_username: "example_user".to_string(),
+                github_repository_owner_name: "example_user".to_string(),
+                github_repository_name: "example_repo".to_string(),
+                github_branch_name: Some("main".to_string()),
                 github_password: "example_password".to_string(),
                 server_name: "example_server".to_string(),
                 server_type: ServerType::Paper,
