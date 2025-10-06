@@ -14,5 +14,5 @@ async fn main() {
     let config = Config::parse();
 
     // デバッグ用 Configを表示する
-    debug!("{:?}",config);
+    debug!("{:?}", config);
 }
