@@ -1,7 +1,7 @@
 use clap::{Parser, ValueEnum};
 
 #[derive(Debug, Parser, PartialEq)]
-pub struct Config{
+pub struct Config {
     #[arg(long, env)]
     pub github_username: String,
     #[arg(long, env)]
@@ -27,16 +27,16 @@ pub struct Config{
 }
 
 #[derive(Debug, Clone, ValueEnum, PartialEq)]
-pub enum ServerType{
+pub enum ServerType {
     Paper,
     Velocity,
 }
 
 #[cfg(test)]
-mod test{
+mod test {
     use super::*;
     #[test]
-    fn parse_arguments(){
+    fn parse_arguments() {
         let configs = Config::try_parse_from([
             "mdcs-controller",
             "--github-username",
@@ -61,11 +61,12 @@ mod test{
             "./start.sh",
             "--stop-command",
             "./stop.sh",
-        ]).unwrap();
+        ])
+        .unwrap();
 
         assert_eq!(
             configs,
-            Config{
+            Config {
                 github_username: "example_user".to_string(),
                 github_repository_owner_name: "example_user".to_string(),
                 github_repository_name: "example_repo".to_string(),
