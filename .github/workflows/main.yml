@@ -14,10 +14,12 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ./controller
+
     steps:
     - uses: actions/checkout@v4
-    - name: cd
-      run: cd controller
     - name: Format
       run: cargo fmt --all -- --check
     - name: Clippy
@@ -26,10 +28,12 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ./controller
+
     steps:
     - uses: actions/checkout@v4
-    - name: cd
-      run: cd controller
     - name: Build
       run: cargo build --verbose
     - name: Run tests
